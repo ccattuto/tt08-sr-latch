@@ -9,12 +9,12 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-Explain how your project works
+Shift register implemented by using D latches - rather than D flip flops - and a two-phase control clock, where one phase clocks the even latches and the other clocks the odd latches.
 
 ## How to test
 
-Explain how to use your project
+Shift zeros into the register until the shift register contains all zeros. Then shift in a single 1 value and observe it periodically appear on the output signal of the shift register.
 
 ## External hardware
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+No external hardware required.
