@@ -30,10 +30,6 @@ module tt_um_cattuto_sr_latch (
 
   parameter SR_LEN = 128; // Default length of the shift register
 
-  // Internal signals for the two-phase clock generation
-  reg clk1;
-  reg clk2;
-
   // Two-phase clock generation
   reg [1:0] clk_state; // State variable to control clock phase transitions
 reg clk1, clk2;      // Two-phase clock signals
