@@ -35,13 +35,39 @@ module tt_um_cattuto_sr_latch (
   reg clk2;
 
   // Two-phase clock generation
-  always @(posedge clk) begin
-    clk1 <= ~clk1; // Toggle clk1 on every rising edge of clk
-  end
+  reg [1:0] clk_state; // State variable to control clock phase transitions
+reg clk1, clk2;      // Two-phase clock signals
 
-  always @(negedge clk) begin
-    clk2 <= ~clk2; // Toggle clk2 on every falling edge of clk
-  end
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+        clk_state <= 2'b00;
+        clk1 <= 0;
+        clk2 <= 0;
+    end else begin
+        case (clk_state)
+            2'b00: begin
+                clk1 <= 0;
+                clk2 <= 0;
+                clk_state <= 2'b01; // Move to state 01
+            end
+            2'b01: begin
+                clk1 <= 1;
+                clk2 <= 0;
+                clk_state <= 2'b11; // Move to state 11 (00 effectively)
+            end
+            2'b11: begin
+                clk1 <= 0;
+                clk2 <= 0;
+                clk_state <= 2'b10; // Move to state 10
+            end
+            2'b10: begin
+                clk1 <= 0;
+                clk2 <= 1;
+                clk_state <= 2'b00; // Return to state 00
+            end
+        endcase
+    end
+end
 
   // Internal signals for the latches
   wire [SR_LEN-1:0] q;
