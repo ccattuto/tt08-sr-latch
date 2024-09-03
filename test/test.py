@@ -40,7 +40,7 @@ async def test_shift_register(dut):
     await Timer(10, units="ns")
     dut._log.info("Applying input: %d", dut.ui_in[0].value)
 
-    for i in range(2 * SR_LEN):
+    for i in range(2 * SR_LEN + 1):
         await RisingEdge(dut.clk)
         await Timer(10, units="ns")  # Allow time for clock phases to update
         dut._log.info(f"Cycle {i}: uo_out[0] = {int(dut.uo_out[0].value)}")
