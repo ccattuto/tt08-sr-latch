@@ -3,38 +3,48 @@
 
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import ClockCycles
-
+from cocotb.triggers import RisingEdge, FallingEdge, Timer
 
 @cocotb.test()
-async def test_project(dut):
-    dut._log.info("Start")
-
-    # Set the clock period to 10 us (100 KHz)
-    clock = Clock(dut.clk, 10, units="us")
+async def test_shift_register(dut):
+    """Test the parameterized shift register with internal two-phase clock generation."""
+    
+    # Create a 10ns period clock on dut.clk
+    clock = Clock(dut.clk, 10, units="ns")
     cocotb.start_soon(clock.start())
 
-    # Reset
-    dut._log.info("Reset")
-    dut.ena.value = 1
-    dut.ui_in.value = 0
-    dut.uio_in.value = 0
+    # Reset the DUT
+    dut._log.info("Resetting the shift register")
     dut.rst_n.value = 0
-    await ClockCycles(dut.clk, 10)
+    await Timer(20, units="ns")  # Wait for 20 ns
     dut.rst_n.value = 1
+    await RisingEdge(dut.clk)  # Wait for a clock cycle after reset
 
-    dut._log.info("Test project behavior")
+    # Initialize input
+    dut.ui_in.value = 1  # Set the input to 1
+    dut._log.info("Applying input: %d", dut.ui_in.value)
 
-    # Set the input values you want to test
-    dut.ui_in.value = 20
-    dut.uio_in.value = 30
+    # Shift the input through the register for SR_LEN + 1 cycles
+    SR_LEN = int(dut.SR_LEN)
+    for i in range(SR_LEN + 1):
+        await RisingEdge(dut.clk)
+        await Timer(10, units="ns")  # Allow time for clock phases to update
+        dut._log.info(f"Cycle {i}: uo_out = {int(dut.uo_out.value)}")
 
-    # Wait for one clock cycle to see the output values
-    await ClockCycles(dut.clk, 1)
+    # Check if the output matches the expected shift behavior
+    expected_output = 1  # Since we shifted in '1', we expect the last bit to be '1'
+    assert dut.uo_out.value == expected_output, f"Test failed: expected {expected_output}, got {int(dut.uo_out.value)}"
 
-    # The following assersion is just an example of how to check the output values.
-    # Change it to match the actual expected output of your module:
-    assert dut.uo_out.value == 50
+    # Test shifting in zeroes
+    dut.ui_in.value = 0  # Change input to 0
+    dut._log.info("Applying input: %d", dut.ui_in.value)
 
-    # Keep testing the module by changing the input values, waiting for
-    # one or more clock cycles, and asserting the expected output values.
+    for i in range(SR_LEN):
+        await RisingEdge(dut.clk)
+        await Timer(10, units="ns")  # Allow time for clock phases to update
+        dut._log.info(f"Cycle {SR_LEN + 1 + i}: uo_out = {int(dut.uo_out.value)}")
+
+    # After shifting SR_LEN zeroes, the output should be zero
+    assert dut.uo_out.value == 0, f"Test failed: expected 0, got {int(dut.uo_out.value)}"
+
+    dut._log.info("Test completed successfully.")
