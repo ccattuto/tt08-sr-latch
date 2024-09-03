@@ -22,6 +22,7 @@ async def test_shift_register(dut):
 
     # Initialize input
     dut.ui_in[0].value = 0  # Set the input to 0
+    await Timer(10, units="ns")
     dut._log.info("Applying input: %d", dut.ui_in[0].value)
 
     # Shift the input through the register for SR_LEN + 1 cycles
@@ -36,6 +37,7 @@ async def test_shift_register(dut):
 
     # Test shifting in ones
     dut.ui_in[0].value = 1  # Change input to 1
+    await Timer(10, units="ns")
     dut._log.info("Applying input: %d", dut.ui_in[0].value)
 
     for i in range(2 * SR_LEN + 1):
@@ -47,4 +49,3 @@ async def test_shift_register(dut):
     assert dut.uo_out[0].value == 1, f"Test failed: expected 1, got {int(dut.uo_out[0].value)}"
 
     dut._log.info("Test completed successfully.")
-    
