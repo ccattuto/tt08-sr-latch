@@ -27,7 +27,7 @@ module tt_um_cattuto_sr_latch (
   wire sr_in = ui_in[0];
   wire sr_out = uo_out[0];
 
-  parameter SR_LEN = 128;  // Default length of the shift register
+  parameter SR_LEN = 128; // Default length of the shift register
 
   // Internal signals for the two-phase clock generation
   reg clk1;
@@ -65,3 +65,21 @@ module tt_um_cattuto_sr_latch (
   assign sr_out = q[SR_LEN-1];    // Output the last latch value
 
 endmodule
+
+
+module d_latch (
+    input  wire d,
+    input  wire clk,
+    input  wire rst_n,
+    output reg q
+);
+
+  always @ (clk or negedge rst_n) begin
+    if (!rst_n)
+      q <= 0;
+    else if (clk)
+      q <= d;
+  end
+
+endmodule
+

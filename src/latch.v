@@ -1,4 +1,5 @@
 // D latch module
+
 module d_latch (
     input  wire d,
     input  wire clk,
