@@ -74,11 +74,18 @@ module d_latch (
     output reg q
 );
 
-  always @* begin
+  // always @* begin
+  //   if (!rst_n)
+  //     q = 0;   // Reset is active low
+  //   else if (clk)
+  //     q = d;   // Latch the data when clk is high
+  // end
+
+  always @(clk or negedge rst_n) begin
     if (!rst_n)
-      q = 0;   // Reset is active low
+      q <= 0;   // Reset output to 0 when rst_n is low
     else if (clk)
-      q = d;   // Latch the data when clk is high
+      q <= d;   // Latch the data when clk is high
   end
 
 endmodule
