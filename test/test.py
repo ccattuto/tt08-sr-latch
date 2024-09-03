@@ -29,8 +29,8 @@ async def test_shift_register(dut):
     SR_LEN = 128
     for i in range(2 * SR_LEN + 2):
         await RisingEdge(dut.clk)
-        #await Timer(10, units="ns")  # Allow time for clock phases to update
-        #dut._log.info(f"Cycle {i}: uo_out[0] = {int(dut.uo_out[0].value)}")
+        await Timer(10, units="ns")  # Allow time for clock phases to update
+        dut._log.info(f"Cycle {i}: uo_out[0] = {int(dut.uo_out[0].value)}")
 
     # Check if the output matches the expected shift behavior
     assert dut.uo_out[0].value == 0, f"Test failed: expected 0, got {int(dut.uo_out[0].value)}"
@@ -42,8 +42,8 @@ async def test_shift_register(dut):
 
     for i in range(2 * SR_LEN + 2):
         await RisingEdge(dut.clk)
-        #await Timer(10, units="ns")  # Allow time for clock phases to update
-        #dut._log.info(f"Cycle {SR_LEN + 1 + i}: uo_out[0] = {int(dut.uo_out[0].value)}")
+        await Timer(10, units="ns")  # Allow time for clock phases to update
+        dut._log.info(f"Cycle {SR_LEN + 1 + i}: uo_out[0] = {int(dut.uo_out[0].value)}")
 
     # After shifting SR_LEN ones, the output should be one
     assert dut.uo_out[0].value == 1, f"Test failed: expected 1, got {int(dut.uo_out[0].value)}"
