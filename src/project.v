@@ -24,8 +24,9 @@ module tt_um_cattuto_sr_latch (
   // List all unused inputs to prevent warnings
   wire _unused = &{ena, clk, rst_n, 1'b0};
 
-  wire sr_in = ui_in[0];
-  wire uo_out[0] = sr_out;
+  wire sr_in, sr_out;
+  assign sr_in = ui_in[0];
+  assign uo_out[0] = sr_out;
 
   parameter SR_LEN = 128; // Default length of the shift register
 
