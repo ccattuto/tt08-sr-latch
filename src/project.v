@@ -35,14 +35,12 @@ module tt_um_cattuto_sr_latch (
   reg clk2;
 
   // Two-phase clock generation
-  always @(posedge clk or negedge rst_n) begin
-    if (!rst_n) begin
-      clk1 <= 0;
-      clk2 <= 0;
-    end else begin
-      clk1 <= ~clk1;
-      clk2 <= clk1; // clk2 is the inverted version of clk1, offset by half clock cycle
-    end
+  always @(posedge clk) begin
+    clk1 <= ~clk1; // Toggle clk1 on every rising edge of clk
+  end
+
+  always @(negedge clk) begin
+    clk2 <= ~clk2; // Toggle clk2 on every falling edge of clk
   end
 
   // Internal signals for the latches
