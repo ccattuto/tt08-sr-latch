@@ -72,6 +72,8 @@ module tt_um_cattuto_sr_latch (
 
 endmodule
 
+`ifdef GL_TEST
+
 module INV (
 	input  wire in,
   output wire out
@@ -82,6 +84,21 @@ module INV (
     .Y     (out)
   );
 endmodule
+
+`else
+
+module INV #(	
+  parameter real INV_DELAY_NS = 0.07
+) (
+	input  wire in,
+  output wire out
+);
+
+not #(INV_DELAY_NS) (out, in);
+
+endmodule
+
+`endif
 
 module d_latch (
     input  wire d,
