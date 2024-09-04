@@ -33,19 +33,17 @@ module tt_um_cattuto_sr_latch (
   // Internal signals for the latches
   wire [SR_LEN-1:0] q;
   wire [SR_LEN-1:0] dclk;
-  assign dclk[0] = clk;
 
   // Generate shift register with alternating clock phases
   genvar i;
   generate
     for (i = 0; i < SR_LEN; i = i + 1) begin : shift_reg
       if (i == 0) begin
-        // First latch takes input from sr_in
-        d_latch latch (.d(sr_in), .clk(dclk[i]), .rst_n(rst_n), .q(q[i]));
+        // First latch takes input from sr_in and clk
+        d_latch latch (.d(sr_in), .clk(clk), .clkout(dclk[i]), .q(q[i]));
       end else begin
         // Subsequent latches take input from previous latch
-        d_latch latch (.d(q[i-1]), .clk(dclk[i]), .rst_n(rst_n), .q(q[i]));
-        assign dclk[i] = ~(~dlkc[i-1]);
+        d_latch latch (.d(q[i-1]), .clk(dclk[i-1]), .clkout(dclk[i]), .q(q[i]));
       end
     end
   endgenerate
@@ -59,17 +57,19 @@ endmodule
 module d_latch (
     input  wire d,
     input  wire clk,
-    input  wire rst_n,
+    output wire clkout,
     output reg q
 );
 
   always @* begin
-    if (!rst_n) begin
-      q = 0;   // Reset output to 0 when rst_n is low
-    end else if (clk) begin
-      q = d;   // Latch the data when clk is high
+    if (clk) begin
+      q = d; // Latch the data when clk is high
     end
     // When clk is low, q retains its previous value
   end
+  
+  wire clknext;
+  assign clknext = ~clk;
+  assign clkout = ~clknext;
 
-endmodule
+  endmodule
