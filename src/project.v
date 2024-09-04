@@ -56,6 +56,12 @@ module tt_um_cattuto_sr_latch (
 
 endmodule
 
+module INV (
+    input wire in,
+    output wire out
+);
+    assign out = ~in;
+endmodule
 
 module d_latch (
     input  wire d,
@@ -72,7 +78,7 @@ module d_latch (
   end
 
   wire clknext;
-  (* keep = "true" *) not u_inv1 (clknext, clk);
-  (* keep = "true" *) not u_inv2 (clkout, clknext);
+  (* keep = "true" *) INV u_inv1 (.out(clknext), .in(clk));
+  (* keep = "true" *) INV u_inv2 (.out(clkout), .in(clknext));
 
   endmodule
