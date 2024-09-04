@@ -43,6 +43,7 @@ async def test_shift_register(dut):
     assert dut.uo_out[0].value == 0, f"Test failed: expected 0, got {int(dut.uo_out[0].value)}"
 
     dut.ui_in[1].value = 0
+    await Timer(10, units="ns")
 
     # Test shifting in ones
     dut.ui_in[0].value = 1  # Change input to 1
