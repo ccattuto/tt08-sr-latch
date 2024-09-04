@@ -30,12 +30,12 @@ module tt_um_cattuto_sr_latch (
   assign uo_out[0] = sr_out;
 
   wire nshift, shift2;
-  (* dont_touch = "true" *) INV u_inv5 (.out(nshift), .in(ui_in[1]));
-  (* dont_touch = "true" *) INV u_inv6 (.out(shift2), .in(nshift));
+  (* dont_touch = "true" *) INV u_invA (.out(nshift), .in(ui_in[1]));
+  (* dont_touch = "true" *) INV u_invB (.out(shift2), .in(nshift));
 
   assign shift = ui_in[1] ^ shift2;
 
-  parameter SR_LEN = 256; // Default length of the shift register
+  parameter SR_LEN = 384; // Default length of the shift register
 
   // Internal signals for the latches
   wire [SR_LEN-1:0] q;
