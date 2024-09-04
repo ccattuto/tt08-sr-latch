@@ -52,7 +52,7 @@ module tt_um_cattuto_sr_latch (
   //   end
   // end
 
-  `ifned RTL_TEST
+  `ifndef RTL_TEST
 
   // Generate shift register with clock delay chain
   genvar i;
