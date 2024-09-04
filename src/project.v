@@ -118,7 +118,7 @@ module d_latch (
 
   always @* begin
     if (clk) begin
-      #(0.1) q = d;
+      #(0.2) q = d;
     end
   end
 
