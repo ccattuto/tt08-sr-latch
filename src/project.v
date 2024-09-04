@@ -78,7 +78,7 @@ module d_latch (
   end
 
   wire clknext;
-  (* keep = "true" *) INV u_inv1 (.out(clknext), .in(clk));
-  (* keep = "true" *) INV u_inv2 (.out(clkout), .in(clknext));
+  (* dont_touch = "true" *) INV u_inv1 (.out(clknext), .in(clk));
+  (* dont_touch = "true" *) INV u_inv2 (.out(clkout), .in(clknext));
 
   endmodule
