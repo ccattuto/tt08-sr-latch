@@ -26,7 +26,6 @@ module tt_um_cattuto_sr_latch (
 
   wire sr_in, sr_out, shift;
   assign sr_in = ui_in[0];
-  //assign shift = ui_in[1];
   assign uo_out[0] = sr_out;
 
   wire nshift, shift2;
@@ -35,11 +34,12 @@ module tt_um_cattuto_sr_latch (
 
   assign shift = ui_in[1] ^ shift2;
 
-  parameter SR_LEN = 384; // Default length of the shift register
+  parameter SR_LEN = 512; // Default length of the shift register
 
   // Internal signals for the latches
   wire [SR_LEN-1:0] q;
   wire [SR_LEN-1:0] dclk;
+  assign sr_out = q[SR_LEN-1];
 
   // reg [9:0] counter;
   // wire shift;
@@ -70,9 +70,6 @@ module tt_um_cattuto_sr_latch (
     end
   endgenerate
 
-  // Output assignment
-  assign sr_out = q[SR_LEN-1];    // Output the last latch value
-
 endmodule
 
 module INV (
@@ -95,13 +92,13 @@ module d_latch (
 
   always @* begin
     if (clk) begin
-      q = d; // Latch the data when clk is high
+      q = d; // latch the data
     end
-    // When clk is low, q retains its previous value
+    // q retains its previous value
   end
 
   wire clknext;
   (* dont_touch = "true" *) INV u_inv1 (.out(clknext), .in(clk));
   (* dont_touch = "true" *) INV u_inv2 (.out(clkout), .in(clknext));
 
-  endmodule
+endmodule
