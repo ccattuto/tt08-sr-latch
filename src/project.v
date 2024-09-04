@@ -34,9 +34,9 @@ module tt_um_cattuto_sr_latch (
 
   assign shift = ui_in[1] ^ shift2;
 
-  parameter SR_LEN = 512; // Default length of the shift register
+  parameter SR_LEN = 512; // length of the shift register
 
-  // Internal signals for the latches
+  // shift register wiring
   wire [SR_LEN-1:0] q;
   wire [SR_LEN-1:0] dclk;
   assign sr_out = q[SR_LEN-1];
@@ -58,14 +58,14 @@ module tt_um_cattuto_sr_latch (
   generate
     for (i = 0; i < SR_LEN; i = i + 1) begin : shift_reg
       if (i == 0) begin
-        // First latch takes input from sr_in
-        (* keep = "true" *) d_latch latch (.d(sr_in), .clk(dclk[i+1]), .clkout(dclk[i]), .q(q[i]));
+        // first latch
+        d_latch latch (.d(sr_in), .clk(dclk[i+1]), .clkout(dclk[i]), .q(q[i]));
       end else if (i == SR_LEN-1) begin
-        // Last latch takes input from the shift control signal
-        (* keep = "true" *) d_latch latch (.d(q[i-1]), .clk(shift), .clkout(dclk[i]), .q(q[i]));
+        // last latch
+        d_latch latch (.d(q[i-1]), .clk(shift), .clkout(dclk[i]), .q(q[i]));
       end else begin
         // all other latches
-        (* keep = "true" *) d_latch latch (.d(q[i-1]), .clk(dclk[i+1]), .clkout(dclk[i]), .q(q[i]));
+        d_latch latch (.d(q[i-1]), .clk(dclk[i+1]), .clkout(dclk[i]), .q(q[i]));
       end
     end
   endgenerate
@@ -92,9 +92,8 @@ module d_latch (
 
   always @* begin
     if (clk) begin
-      q = d; // latch the data
+      q = d;
     end
-    // q retains its previous value
   end
 
   wire clknext;
