@@ -30,23 +30,10 @@ module tt_um_cattuto_sr_latch (
 
   parameter SR_LEN = 128; // Default length of the shift register
 
-  // Internal signals for the two-phase clock generation
-  reg clk1;
-  reg clk2;
-
-  // Two-phase clock generation
-  always @(posedge clk or negedge rst_n) begin
-    if (!rst_n) begin
-      clk1 <= 0;
-      clk2 <= 0;
-    end else begin
-      clk1 <= ~clk1;
-      clk2 <= clk1; // clk2 is the inverted version of clk1, offset by half clock cycle
-    end
-  end
-
   // Internal signals for the latches
   wire [SR_LEN-1:0] q;
+  wire [SR_LEN-1:0] dclk;
+  assign dclk[0] = clk;
 
   // Generate shift register with alternating clock phases
   genvar i;
@@ -54,10 +41,11 @@ module tt_um_cattuto_sr_latch (
     for (i = 0; i < SR_LEN; i = i + 1) begin : shift_reg
       if (i == 0) begin
         // First latch takes input from sr_in
-        d_latch latch (.d(sr_in), .clk((i % 2) ? clk2 : clk1), .rst_n(rst_n), .q(q[i]));
+        d_latch latch (.d(sr_in), .clk(dclk[i]), .rst_n(rst_n), .q(q[i]));
       end else begin
         // Subsequent latches take input from previous latch
-        d_latch latch (.d(q[i-1]), .clk((i % 2) ? clk2 : clk1), .rst_n(rst_n), .q(q[i]));
+        d_latch latch (.d(q[i-1]), .clk(dclk[i]), .rst_n(rst_n), .q(q[i]));
+        assign dclk[i] = ~(~dlkc[i-1]);
       end
     end
   endgenerate
