@@ -32,7 +32,7 @@ async def test_shift_register(dut):
     await Timer(10, units="ns")
 
     # Shift the input through the register for SR_LEN + 1 cycles
-    SR_LEN = 128
+    SR_LEN = 256
     for i in range(SR_LEN):
         await Timer(10, units="ns")
 
