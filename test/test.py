@@ -42,6 +42,8 @@ async def test_shift_register(dut):
     # Check if the output matches the expected shift behavior
     assert dut.uo_out[0].value == 0, f"Test failed: expected 0, got {int(dut.uo_out[0].value)}"
 
+    dut.ui_in[1].value = 0
+
     # Test shifting in ones
     dut.ui_in[0].value = 1  # Change input to 1
     await Timer(10, units="ns")
@@ -53,9 +55,9 @@ async def test_shift_register(dut):
         await Timer(100, units="ns")
 
         # pulse shift signal
-        dut.ui_in[1].value = 1
-        await Timer(10, units="ps")
-        dut.ui_in[1].value = 0
+        dut.ui_in[1].value = 1 - dut.ui_in[1].value
+        await Timer(1, units="ns")
+        #dut.ui_in[1].value = 0
 
         dut._log.info(f"Cycle {i}: uo_out[0] = {int(dut.uo_out[0].value)}")
 
