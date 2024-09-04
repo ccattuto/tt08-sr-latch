@@ -21,8 +21,8 @@ module tt_um_cattuto_sr_latch (
   assign uio_out = 0;
   assign uio_oe  = 0;
 
-  // List all unused inputs to prevent warnings
-  wire _unused = &{ena, clk, rst_n, 1'b0};
+  // List all unused signals to prevent warnings
+  wire _unused = &{ena, clk, rst_n, ui_in[7:1], uio_in, dclk[0], 1'b0};
 
   wire sr_in, sr_out;
   assign sr_in = ui_in[0];
@@ -57,10 +57,14 @@ module tt_um_cattuto_sr_latch (
 endmodule
 
 module INV (
-    input wire in,
-    output wire out
+	input  wire in,
+  output wire out
 );
-    assign out = ~in;
+
+  sky130_fd_sc_hd__inv_2 cnt_bit_I (
+    .A     (in),
+    .Y     (out)
+  );
 endmodule
 
 module d_latch (
