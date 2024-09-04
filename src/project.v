@@ -52,6 +52,8 @@ module tt_um_cattuto_sr_latch (
   //   end
   // end
 
+  `ifned RTL_TEST
+
   // Generate shift register with clock delay chain
   genvar i;
   generate
@@ -69,6 +71,27 @@ module tt_um_cattuto_sr_latch (
     end
   endgenerate
 
+  `else
+
+// Generate shift register with clock delay chain
+  genvar i;
+  generate
+    for (i = 0; i < SR_LEN; i = i + 1) begin : shift_reg
+      if (i == 0) begin
+        // first latch
+        d_latch latch #2 (.d(sr_in), .clk(dclk[i+1]), .clkout(dclk[i]), .q(q[i]));
+      end else if (i == SR_LEN-1) begin
+        // last latch
+        d_latch latch #2 (.d(q[i-1]), .clk(shift), .clkout(dclk[i]), .q(q[i]));
+      end else begin
+        // all other latches
+        d_latch latch #2 (.d(q[i-1]), .clk(dclk[i+1]), .clkout(dclk[i]), .q(q[i]));
+      end
+    end
+  endgenerate
+
+  `endif
+
 endmodule
 
 `ifndef RTL_TEST
@@ -78,7 +101,7 @@ module INV (
   output wire out
 );
 
-  sky130_fd_sc_hd__inv cnt_bit_I (
+  sky130_fd_sc_hd__inv_2 cnt_bit_I (
     .A     (in),
     .Y     (out)
   );
@@ -106,23 +129,11 @@ module d_latch (
     output reg q
 );
 
-  `ifndef RTL_TEST
-
   always @* begin
     if (clk) begin
       q = d;
     end
   end
-
-  `else
-
-  always @* begin
-    if (clk) begin
-      #1 q = d;
-    end
-  end
-
-  `endif
 
   wire clknext;
   (* dont_touch = "true" *) INV u_inv1 (.out(clknext), .in(clk));
