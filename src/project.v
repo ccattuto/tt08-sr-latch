@@ -67,9 +67,9 @@ module d_latch (
     end
     // When clk is low, q retains its previous value
   end
-  
+
   wire clknext;
-  assign clknext = ~clk;
-  assign clkout = ~clknext;
+  (* dont_touch = "true" *) not u_inv1 (clknext, clk);
+  (* dont_touch = "true" *) not u_inv2 (clkout, clknext);
 
   endmodule
