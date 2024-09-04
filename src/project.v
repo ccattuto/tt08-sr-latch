@@ -71,7 +71,7 @@ module tt_um_cattuto_sr_latch (
 
 endmodule
 
-`ifdef GDS
+`ifndef SIM
 
 module INV (
 	input  wire in,
