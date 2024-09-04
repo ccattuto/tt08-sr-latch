@@ -101,7 +101,7 @@ module INV (
   output wire out
 );
 
-  sky130_fd_sc_hd__inv_2 cnt_bit_I (
+  sky130_fd_sc_hd__inv_1 cnt_bit_I (
     .A     (in),
     .Y     (out)
   );
