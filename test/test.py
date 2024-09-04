@@ -33,9 +33,9 @@ async def test_shift_register(dut):
         await Timer(100, units="ns")
 
         # pulse shift signal
-        dut.ui_in[1].value = 1 - dut.ui_in[1].value
-        #await Timer(1, units="ns")
-        #dut.ui_in[1].value = 0
+        dut.ui_in[1].value = 1
+        await Timer(1, units="ps")
+        dut.ui_in[1].value = 0
 
     dut._log.info(f"Cycle {i}: uo_out[0] = {int(dut.uo_out[0].value)}")
 
@@ -47,15 +47,18 @@ async def test_shift_register(dut):
     await Timer(10, units="ns")
     dut._log.info("Applying input: %d", dut.ui_in[0].value)
 
-    for i in range(SR_LEN):
+    for i in range(2 * SR_LEN):
         await Timer(100, units="ns")
 
         # pulse shift signal
-        dut.ui_in[1].value = 1 - dut.ui_in[1].value
-        #await Timer(1, units="ns")
-        #dut.ui_in[1].value = 0
+        dut.ui_in[1].value = 1
+        await Timer(10, units="ps")
+        dut.ui_in[1].value = 0
 
         dut._log.info(f"Cycle {i}: uo_out[0] = {int(dut.uo_out[0].value)}")
+
+        if i == 10:
+            dut.ui_in[0].value = 0
 
     # After shifting SR_LEN ones, the output should be one
     assert dut.uo_out[0].value == 1, f"Test failed: expected 1, got {int(dut.uo_out[0].value)}"
