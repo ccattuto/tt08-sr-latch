@@ -13,8 +13,10 @@ async def test_shift_register(dut):
     clock = Clock(dut.clk, 50, units="ns")
     cocotb.start_soon(clock.start())
 
-    # Reset the DUT
-    dut._log.info("Resetting the shift register")
+    dut.ui_in[1].value = 0
+
+    # Reset
+    dut._log.info("Reset")
     dut.rst_n.value = 0
     await Timer(20, units="ns")  # Wait for 20 ns
     dut.rst_n.value = 1
@@ -28,9 +30,14 @@ async def test_shift_register(dut):
     # Shift the input through the register for SR_LEN + 1 cycles
     SR_LEN = 128
     for i in range(2 * SR_LEN):
-        await RisingEdge(dut.clk)
-        await Timer(10, units="ns")  # Allow time for clock phases to update
-        dut._log.info(f"Cycle {i}: uo_out[0] = {int(dut.uo_out[0].value)}")
+        await Timer(100, units="ns")
+
+        # pulse shift signal
+        dut.ui_in[1].value = 1
+        await Timer(1, units="ns")
+        dut.ui_in[1].value = 0
+
+    dut._log.info(f"Cycle {i}: uo_out[0] = {int(dut.uo_out[0].value)}")
 
     # Check if the output matches the expected shift behavior
     assert dut.uo_out[0].value == 0, f"Test failed: expected 0, got {int(dut.uo_out[0].value)}"
