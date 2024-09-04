@@ -69,7 +69,7 @@ module d_latch (
   end
 
   wire clknext;
-  (* dont_touch = "true" *) not u_inv1 (clknext, clk);
-  (* dont_touch = "true" *) not u_inv2 (clkout, clknext);
+  (* keep = "true" *) not u_inv1 (clknext, clk);
+  (* keep = "true" *) not u_inv2 (clkout, clknext);
 
   endmodule
