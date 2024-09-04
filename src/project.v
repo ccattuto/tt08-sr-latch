@@ -34,16 +34,19 @@ module tt_um_cattuto_sr_latch (
   wire [SR_LEN-1:0] q;
   wire [SR_LEN-1:0] dclk;
 
-  // Generate shift register with alternating clock phases
+  // Generate shift register with clock delay chain
   genvar i;
   generate
     for (i = 0; i < SR_LEN; i = i + 1) begin : shift_reg
       if (i == 0) begin
-        // First latch takes input from sr_in and clk
-        d_latch latch (.d(sr_in), .clk(clk), .clkout(dclk[i]), .q(q[i]));
+        // First latch takes input from sr_in
+        d_latch latch (.d(sr_in), .clk(dclk[i+1]), .clkout(dclk[i]), .q(q[i]));
+      end else if (i == SR_LEN-1) begin
+        // Last latch takes input from clk
+        d_latch latch (.d(q[i-1]), .clk(clk), .clkout(dclk[i]), .q(q[i]));
       end else begin
-        // Subsequent latches take input from previous latch
-        d_latch latch (.d(q[i-1]), .clk(dclk[i-1]), .clkout(dclk[i]), .q(q[i]));
+        // all other latches
+        d_latch latch (.d(q[i-1]), .clk(dclk[i+1]), .clkout(dclk[i]), .q(q[i]));
       end
     end
   endgenerate
