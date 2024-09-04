@@ -22,10 +22,11 @@ module tt_um_cattuto_sr_latch (
   assign uio_oe  = 0;
 
   // List all unused signals to prevent warnings
-  wire _unused = &{ena, clk, rst_n, ui_in[7:1], uio_in, dclk[0], 1'b0};
+  wire _unused = &{ena, clk, rst_n, ui_in[7:2], uio_in, dclk[0], 1'b0};
 
-  wire sr_in, sr_out;
+  wire sr_in, sr_out, shift;
   assign sr_in = ui_in[0];
+  assign shift = ui_in[1];
   assign uo_out[0] = sr_out;
 
   parameter SR_LEN = 128; // Default length of the shift register
@@ -34,17 +35,17 @@ module tt_um_cattuto_sr_latch (
   wire [SR_LEN-1:0] q;
   wire [SR_LEN-1:0] dclk;
 
-  reg [9:0] counter;
-  wire shift;
-  assign shift = counter[9];
+  // reg [9:0] counter;
+  // wire shift;
+  // assign shift = counter[9];
 
-  always @(posedge clk or negedge rst_n) begin
-    if (!rst_n) begin
-      counter <= 0;
-    end else begin
-      counter <= counter + 1;
-    end
-  end
+  // always @(posedge clk or negedge rst_n) begin
+  //   if (!rst_n) begin
+  //     counter <= 0;
+  //   end else begin
+  //     counter <= counter + 1;
+  //   end
+  // end
 
   // Generate shift register with clock delay chain
   genvar i;
