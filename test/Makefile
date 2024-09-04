@@ -11,6 +11,7 @@ ifneq ($(GATES),yes)
 
 # RTL simulation:
 SIM_BUILD				= sim_build/rtl
+COMPILE_ARGS    += -DRTL_TEST
 VERILOG_SOURCES += $(addprefix $(SRC_DIR)/,$(PROJECT_SOURCES))
 COMPILE_ARGS 		+= -I$(SRC_DIR)
 

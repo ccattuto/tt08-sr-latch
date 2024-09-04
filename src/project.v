@@ -71,7 +71,7 @@ module tt_um_cattuto_sr_latch (
 
 endmodule
 
-`ifndef SIM
+`ifndef RTL_TEST
 
 module INV (
 	input  wire in,
