@@ -59,13 +59,13 @@ module tt_um_cattuto_sr_latch (
     for (i = 0; i < SR_LEN; i = i + 1) begin : shift_reg
       if (i == 0) begin
         // First latch takes input from sr_in
-        d_latch latch (.d(sr_in), .clk(dclk[i+1]), .clkout(dclk[i]), .q(q[i]));
+        (* keep = "true" *) d_latch latch (.d(sr_in), .clk(dclk[i+1]), .clkout(dclk[i]), .q(q[i]));
       end else if (i == SR_LEN-1) begin
         // Last latch takes input from the shift control signal
-        d_latch latch (.d(q[i-1]), .clk(shift), .clkout(dclk[i]), .q(q[i]));
+        (* keep = "true" *) d_latch latch (.d(q[i-1]), .clk(shift), .clkout(dclk[i]), .q(q[i]));
       end else begin
         // all other latches
-        d_latch latch (.d(q[i-1]), .clk(dclk[i+1]), .clkout(dclk[i]), .q(q[i]));
+        (* keep = "true" *) d_latch latch (.d(q[i-1]), .clk(dclk[i+1]), .clkout(dclk[i]), .q(q[i]));
       end
     end
   endgenerate
