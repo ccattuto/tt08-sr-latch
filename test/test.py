@@ -29,7 +29,7 @@ async def test_shift_register(dut):
 
     # Shift the input through the register for SR_LEN + 1 cycles
     SR_LEN = 128
-    for i in range(2 * SR_LEN):
+    for i in range(SR_LEN):
         await Timer(100, units="ns")
 
         # pulse shift signal
@@ -47,9 +47,14 @@ async def test_shift_register(dut):
     await Timer(10, units="ns")
     dut._log.info("Applying input: %d", dut.ui_in[0].value)
 
-    for i in range(2 * SR_LEN + 1):
-        await RisingEdge(dut.clk)
-        await Timer(10, units="ns")  # Allow time for clock phases to update
+    for i in range(SR_LEN):
+        await Timer(100, units="ns")
+
+        # pulse shift signal
+        dut.ui_in[1].value = 1
+        await Timer(1, units="ns")
+        dut.ui_in[1].value = 0
+        
         dut._log.info(f"Cycle {i}: uo_out[0] = {int(dut.uo_out[0].value)}")
 
     # After shifting SR_LEN ones, the output should be one
