@@ -106,11 +106,23 @@ module d_latch (
     output reg q
 );
 
+  `ifndef RTL_TEST
+
   always @* begin
     if (clk) begin
       q = d;
     end
   end
+
+  `else
+
+  always @* begin
+    if (clk) begin
+      #(0.1) q = d;
+    end
+  end
+
+  `endif
 
   wire clknext;
   (* dont_touch = "true" *) INV u_inv1 (.out(clknext), .in(clk));
