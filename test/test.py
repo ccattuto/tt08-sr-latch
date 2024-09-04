@@ -34,7 +34,7 @@ async def test_shift_register(dut):
 
         # pulse shift signal
         dut.ui_in[1].value = 1
-        await Timer(1, units="ns")
+        await Timer(10, units="ps")
         dut.ui_in[1].value = 0
 
     dut._log.info(f"Cycle {i}: uo_out[0] = {int(dut.uo_out[0].value)}")
@@ -52,9 +52,9 @@ async def test_shift_register(dut):
 
         # pulse shift signal
         dut.ui_in[1].value = 1
-        await Timer(1, units="ns")
+        await Timer(10, units="ps")
         dut.ui_in[1].value = 0
-        
+
         dut._log.info(f"Cycle {i}: uo_out[0] = {int(dut.uo_out[0].value)}")
 
     # After shifting SR_LEN ones, the output should be one
