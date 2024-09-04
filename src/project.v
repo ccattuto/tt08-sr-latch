@@ -35,7 +35,7 @@ module tt_um_cattuto_sr_latch (
 
   assign shift = ui_in[1] ^ shift2;
 
-  parameter SR_LEN = 128; // Default length of the shift register
+  parameter SR_LEN = 512; // Default length of the shift register
 
   // Internal signals for the latches
   wire [SR_LEN-1:0] q;
