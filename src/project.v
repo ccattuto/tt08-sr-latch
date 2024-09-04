@@ -78,7 +78,7 @@ module INV (
   output wire out
 );
 
-  sky130_fd_sc_hd__inv_2 cnt_bit_I (
+  sky130_fd_sc_hd__inv cnt_bit_I (
     .A     (in),
     .Y     (out)
   );
@@ -118,7 +118,7 @@ module d_latch (
 
   always @* begin
     if (clk) begin
-      #(0.2) q = d;
+      #1 q = d;
     end
   end
 
