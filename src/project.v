@@ -34,6 +34,18 @@ module tt_um_cattuto_sr_latch (
   wire [SR_LEN-1:0] q;
   wire [SR_LEN-1:0] dclk;
 
+  reg [9:0] counter;
+  wire shift;
+  assign shift = counter[9];
+  
+  always @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+      counter <= 0;
+    end else begin
+      count <= counter + 1;
+    end
+  end
+
   // Generate shift register with clock delay chain
   genvar i;
   generate
@@ -42,8 +54,8 @@ module tt_um_cattuto_sr_latch (
         // First latch takes input from sr_in
         d_latch latch (.d(sr_in), .clk(dclk[i+1]), .clkout(dclk[i]), .q(q[i]));
       end else if (i == SR_LEN-1) begin
-        // Last latch takes input from clk
-        d_latch latch (.d(q[i-1]), .clk(clk), .clkout(dclk[i]), .q(q[i]));
+        // Last latch takes input from the shift control signal
+        d_latch latch (.d(q[i-1]), .clk(shift), .clkout(dclk[i]), .q(q[i]));
       end else begin
         // all other latches
         d_latch latch (.d(q[i-1]), .clk(dclk[i+1]), .clkout(dclk[i]), .q(q[i]));
