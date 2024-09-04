@@ -31,7 +31,6 @@ module tt_um_cattuto_sr_latch (
   wire nshift, shift2;
   (* dont_touch = "true" *) INV u_invA (.out(nshift), .in(ui_in[1]));
   (* dont_touch = "true" *) INV u_invB (.out(shift2), .in(nshift));
-
   assign shift = ui_in[1] ^ shift2;
 
   parameter SR_LEN = 512; // length of the shift register
@@ -72,7 +71,7 @@ module tt_um_cattuto_sr_latch (
 
 endmodule
 
-`ifdef GL_TEST
+`ifdef GDS
 
 module INV (
 	input  wire in,
