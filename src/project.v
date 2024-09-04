@@ -37,12 +37,12 @@ module tt_um_cattuto_sr_latch (
   reg [9:0] counter;
   wire shift;
   assign shift = counter[9];
-  
+
   always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
       counter <= 0;
     end else begin
-      count <= counter + 1;
+      counter <= counter + 1;
     end
   end
 
