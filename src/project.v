@@ -26,8 +26,14 @@ module tt_um_cattuto_sr_latch (
 
   wire sr_in, sr_out, shift;
   assign sr_in = ui_in[0];
-  assign shift = ui_in[1];
+  //assign shift = ui_in[1];
   assign uo_out[0] = sr_out;
+
+  wire nshift, shift2;
+  (* dont_touch = "true" *) INV u_inv5 (.out(nshift), .in(ui_in[1]));
+  (* dont_touch = "true" *) INV u_inv6 (.out(shift2), .in(nshift));
+
+  assign shift = ui_in[1] ^ shift2;
 
   parameter SR_LEN = 128; // Default length of the shift register
 
