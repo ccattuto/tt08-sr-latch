@@ -47,6 +47,8 @@ async def test_shift_register(dut):
     await Timer(10, units="ns")
     dut._log.info("Applying input: %d", dut.ui_in[0].value)
 
+    SEQ_LEN = 10
+    sum = 0
     for i in range(2 * SR_LEN):
         await Timer(100, units="ns")
 
@@ -57,10 +59,14 @@ async def test_shift_register(dut):
 
         dut._log.info(f"Cycle {i}: uo_out[0] = {int(dut.uo_out[0].value)}")
 
-        if i == 10:
+        if i == SEQ_LEN - 1:
             dut.ui_in[0].value = 0
 
+        sum = sum + int(dut.uo_out[0].value)
+
     # After shifting SR_LEN ones, the output should be one
-    assert dut.uo_out[0].value == 1, f"Test failed: expected 1, got {int(dut.uo_out[0].value)}"
+    assert dut.uo_out[0].value == 0, f"Test failed: expected 1, got {int(dut.uo_out[0].value)}"
+
+    assert sum == SEQ_LEN, f"Test failed: expected {SEQ_LEN}, got {sum}"
 
     dut._log.info("Test completed successfully.")
