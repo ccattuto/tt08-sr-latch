@@ -38,7 +38,7 @@ module tt_um_cattuto_sr_latch (
   (* dont_touch = "true" *) INV u_invB (.out(trig_delayed), .in(ntrig));
   assign shift = trig ^ trig_delayed;
 
-  parameter SR_LEN = 512; // length of the shift register
+  parameter SR_LEN = 512-64; // length of the shift register
 
   // shift register wiring
   wire [SR_LEN-1:0] q;
