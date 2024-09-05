@@ -22,7 +22,7 @@ module tt_um_cattuto_sr_latch (
   assign uio_oe  = 0;
 
   // List all unused signals to prevent warnings
-  wire _unused = &{ena, rst_n, ui_in[7:3], uio_in, dclk[0], 1'b0};
+  wire _unused = &{ena, rst_n, ui_in[7:2], uio_in, dclk[0], 1'b0};
 
   wire sr_in, sr_out;
   assign sr_in = ui_in[0];
@@ -33,7 +33,7 @@ module tt_um_cattuto_sr_latch (
   wire shift, d1, d2;
   (* dont_touch = "true" *) INV u_invA (.out(d1), .in(ui_in[1]));
   (* dont_touch = "true" *) INV u_invB (.out(d2), .in(d1));
-  assign shift = (ui_in[2] ? clk : ui_in[1]) ^ d2;
+  assign shift = ui_in[1] ^ d2;
 
   parameter SR_LEN = 512; // length of the shift register
 
