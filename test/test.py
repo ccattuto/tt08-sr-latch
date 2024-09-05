@@ -16,6 +16,8 @@ async def test_shift_register(dut):
     dut.rst_n.value = 1
     await Timer(20, units="ns")  # Wait for 20 ns
 
+    dut.ui_in[2].value = 0
+
     # ---------------------------
 
     dut.ui_in[1].value = 0
