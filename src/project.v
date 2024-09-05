@@ -75,14 +75,12 @@ endmodule
 
 `else
 
-module INV #(	
-  parameter real INV_DELAY_NS = 0.07
-) (
+module INV (
 	input  wire in,
   output wire out
 );
 
-not #(INV_DELAY_NS) (out, in);
+  not (out, in);
 
 endmodule
 
