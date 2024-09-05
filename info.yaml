@@ -3,9 +3,9 @@ project:
   title:        "TT08 - experiments with latch-based shift registers"      # Project title
   author:       "Ciro Cattuto"      # Your name
   discord:      "ccattuto"      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
-  description:  "Shift registers implemented with latches and a two-phased clock "      # One line description of what your project does
+  description:  "A 512-bit latch-based shift register in 1 tile"      # One line description of what your project does
   language:     "Verilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
-  clock_hz:     20000000   # Clock frequency in Hz (or 0 if not applicable)
+  clock_hz:     0   # Clock frequency in Hz (or 0 if not applicable)
 
   # How many tiles your design occupies? A single tile is about 167x108 uM.
   tiles: "1x1"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2 or 8x2
@@ -22,8 +22,8 @@ project:
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 pinout:
   # Inputs
-  ui[0]: "latch input"
-  ui[1]: ""
+  ui[0]: "shift register input"
+  ui[1]: "shift control (edge-triggered)"
   ui[2]: ""
   ui[3]: ""
   ui[4]: ""
@@ -32,7 +32,7 @@ pinout:
   ui[7]: ""
 
   # Outputs
-  uo[0]: "latch output"
+  uo[0]: "shift register output"
   uo[1]: ""
   uo[2]: ""
   uo[3]: ""

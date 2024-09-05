@@ -9,11 +9,11 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-Shift register implemented by using D latches - rather than D flip flops - and a two-phase control clock, where one phase clocks the even latches and the other clocks the odd latches.
+This is an experiment. A 512-bit shift register (SR) implemented using D latches rather than D flip flops. The shift logic relies on a single pulse rippling along the shift register, from the output latch towards the input latch. The SR has one input, one output, and an edge-triggered control signal that controls the shift update. The SR shifts on either a rising or a falling edge of the control signal.
 
 ## How to test
 
-Shift zeros into the register until the shift register contains all zeros. Then shift in a single 1 value and observe it periodically appear on the output signal of the shift register.
+Shift zeros into the SR until it contains all zeros. Then shift in any sequence of 1s and 0s and observe it  appear on the output of the SR after 512 transitions of the control signal.
 
 ## External hardware
 

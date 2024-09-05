@@ -2,75 +2,54 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import cocotb
-from cocotb.clock import Clock
-from cocotb.triggers import RisingEdge, FallingEdge, Timer
+from cocotb.triggers import Timer
+import random
+
+SR_LEN = 512
 
 @cocotb.test()
 async def test_shift_register(dut):
     """Test the shift register."""
 
+    # SR signals
+    sr_ctrl = dut.ui_in[1]
+    sr_in = dut.ui_in[0]
+    sr_out = dut.uo_out[0]
+
     # Reset
     dut._log.info("Reset")
-    dut.rst_n.value = 0
-    await Timer(20, units="ns")  # Wait for 20 ns
-    dut.rst_n.value = 1
-    await Timer(20, units="ns")  # Wait for 20 ns
-
-    dut.ui_in[2].value = 0
-
-    # ---------------------------
-
-    dut.ui_in[1].value = 0
+    sr_ctrl.value = 0 
+    sr_in.value = 0
     await Timer(10, units="ns")
 
-    # fill shift register with 0s
-    dut.ui_in[0].value = 0  # Set the input to 0
-    await Timer(10, units="ns")
-    dut._log.info("Applying input: %d", dut.ui_in[0].value)
+    seq = [random.randint(0,1) for i in range(SR_LEN)]
 
-    # Shift the input through the register for SR_LEN + 1 cycles
-    SR_LEN = 512
+    dut._log.info("Shifting in test sequence...") 
+
+    # shift-in the random sequence
     for i in range(SR_LEN):
+        # set SR input
+        sr_in.value = seq[i]
         await Timer(10, units="ns")
 
-        # toggle shift signal
-        dut.ui_in[1].value = 1 - dut.ui_in[1].value
+        # toggle shift control signal
+        sr_ctrl.value = 1 - sr_ctrl.value
         await Timer(10, units="ns")
 
-    dut._log.info(f"Cycle {i}: uo_out[0] = {int(dut.uo_out[0].value)}")
+        if i % 16 == 0:
+            dut._log.info(i)
 
-    # Check if the output matches the expected shift behavior
-    assert dut.uo_out[0].value == 0, f"Test failed: expected 0, got {int(dut.uo_out[0].value)}"
+    dut._log.info("Shifting out and checking test sequence...") 
 
-    # ---------------------------
+    # shift-out the random sequence and check it is correct
+    for i in range(SR_LEN):
+        assert sr_out.value == seq[i]
 
-    dut.ui_in[1].value = 0
-    await Timer(10, units="ns")
-
-    # Test shifting in ones
-    dut.ui_in[0].value = 1  # Change input to 1
-    await Timer(10, units="ns")
-    dut._log.info("Applying input: %d", dut.ui_in[0].value)
-
-    SEQ_LEN = 17
-    sum = 0
-    for i in range(SR_LEN + SEQ_LEN * 2):
+        # toggle shift control signal
+        sr_ctrl.value = 1 - sr_ctrl.value
         await Timer(10, units="ns")
 
-        # toggle shift signal
-        dut.ui_in[1].value = 1 - dut.ui_in[1].value
-        await Timer(10, units="ns")
-
-        dut._log.info(f"Cycle {i}: uo_out[0] = {int(dut.uo_out[0].value)}")
-
-        if i == SEQ_LEN - 1:
-            dut.ui_in[0].value = 0
-
-        sum = sum + int(dut.uo_out[0].value)
-
-    # After shifting SR_LEN ones, the output should be one
-    assert dut.uo_out[0].value == 0, f"Test failed: expected 1, got {int(dut.uo_out[0].value)}"
-
-    assert sum == SEQ_LEN, f"Test failed: expected {SEQ_LEN}, got {sum}"
+        if i % 16 == 0:
+            dut._log.info(i)
 
     dut._log.info("Test completed successfully.")
