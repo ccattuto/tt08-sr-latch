@@ -29,7 +29,7 @@ async def test_shift_register(dut):
     dut._log.info("Applying input: %d", dut.ui_in[0].value)
 
     # Shift the input through the register for SR_LEN + 1 cycles
-    SR_LEN = 256
+    SR_LEN = 512
     for i in range(SR_LEN):
         await Timer(10, units="ns")
 
