@@ -17,17 +17,18 @@ module tt_um_cattuto_sr_latch (
 );
 
   // All output pins must be assigned. If not used, assign to 0.
-  assign uo_out[7:1] = 0;
+  assign uo_out[7:2] = 0;
   assign uio_out = 0;
   assign uio_oe  = 0;
 
   // List all unused signals to prevent warnings
-  wire _unused = &{ena, rst_n, ui_in[7:2], uio_in, dclk[0], clk, 1'b0};
+  wire _unused = &{ena, rst_n, ui_in[7:2], uio_in, dclk[0], 1'b0};
 
   wire sr_in, sr_out;
   assign sr_in = ui_in[0];
   assign sr_out = q[SR_LEN-1];
   assign uo_out[0] = sr_out;
+  assign uo_out[1] = clk;
 
   // ripple pulse generation (triggered by ui_in[1] or by the clk signal)
   wire shift, ntrig, trig_delayed;
