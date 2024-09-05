@@ -22,21 +22,18 @@ module tt_um_cattuto_sr_latch (
   assign uio_oe  = 0;
 
   // List all unused signals to prevent warnings
-  wire _unused = &{ena, rst_n, ui_in[7:2], uio_in, dclk[0], 1'b0};
+  wire _unused = &{ena, rst_n, ui_in[7:2], uio_in, dclk[0], clk, 1'b0};
 
   wire sr_in, sr_out;
   assign sr_in = ui_in[0];
   assign sr_out = q[SR_LEN-1];
   assign uo_out[0] = sr_out;
 
-  wire trig;
-  assign trig = ui_in[1];
-
   // ripple pulse generation (triggered by ui_in[1] or by the clk signal)
   wire shift, ntrig, trig_delayed;
-  (* dont_touch = "true" *) INV u_invA (.out(ntrig), .in(trig));
+  (* dont_touch = "true" *) INV u_invA (.out(ntrig), .in(ui_in[1]));
   (* dont_touch = "true" *) INV u_invB (.out(trig_delayed), .in(ntrig));
-  assign shift = trig ^ trig_delayed;
+  assign shift = ui_in[1] ^ trig_delayed;
 
   parameter SR_LEN = 512; // length of the shift register
 
