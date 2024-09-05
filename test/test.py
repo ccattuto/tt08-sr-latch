@@ -7,19 +7,14 @@ from cocotb.triggers import RisingEdge, FallingEdge, Timer
 
 @cocotb.test()
 async def test_shift_register(dut):
-    """Test the parameterized shift register with internal two-phase clock generation."""
-    
-    # Create a 50ns period clock on dut.clk (20 MHz)
-    clock = Clock(dut.clk, 50, units="ns")
-    cocotb.start_soon(clock.start())
-
+    """Test the shift register."""
 
     # Reset
     dut._log.info("Reset")
     dut.rst_n.value = 0
     await Timer(20, units="ns")  # Wait for 20 ns
     dut.rst_n.value = 1
-    await RisingEdge(dut.clk)  # Wait for a clock cycle after reset
+    await Timer(20, units="ns")  # Wait for 20 ns
 
     # ---------------------------
 
@@ -57,7 +52,7 @@ async def test_shift_register(dut):
 
     SEQ_LEN = 10
     sum = 0
-    for i in range(2 * SR_LEN):
+    for i in range(SR_LEN):
         await Timer(10, units="ns")
 
         # toggle shift signal

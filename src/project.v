@@ -17,42 +17,32 @@ module tt_um_cattuto_sr_latch (
 );
 
   // All output pins must be assigned. If not used, assign to 0.
-  assign uo_out[7:1] = 0;
+  assign uo_out[7:2] = 0;
   assign uio_out = 0;
   assign uio_oe  = 0;
 
   // List all unused signals to prevent warnings
-  wire _unused = &{ena, clk, rst_n, ui_in[7:2], uio_in, dclk[0], 1'b0};
+  wire _unused = &{ena, clk, rst_n, ui_in[7:2], uio_in, 1'b0};
 
-  wire sr_in, sr_out, shift;
+  wire sr_in, sr_out;
   assign sr_in = ui_in[0];
+  assign sr_out = q[SR_LEN-1];
   assign uo_out[0] = sr_out;
+  assign uo_out[1] = dclk[0];
 
-  wire nshift, shift2;
-  (* dont_touch = "true" *) INV u_invA (.out(nshift), .in(ui_in[1]));
-  (* dont_touch = "true" *) INV u_invB (.out(shift2), .in(nshift));
-  assign shift = ui_in[1] ^ shift2;
+  // ripple pulse generation
+  wire shift, d1, d2;
+  (* dont_touch = "true" *) INV u_invA (.out(d1), .in(ui_in[1]));
+  (* dont_touch = "true" *) INV u_invB (.out(d2), .in(d1));
+  assign shift = ui_in[1] ^ d2;
 
   parameter SR_LEN = 512; // length of the shift register
 
   // shift register wiring
   wire [SR_LEN-1:0] q;
   wire [SR_LEN-1:0] dclk;
-  assign sr_out = q[SR_LEN-1];
 
-  // reg [9:0] counter;
-  // wire shift;
-  // assign shift = counter[9];
-
-  // always @(posedge clk or negedge rst_n) begin
-  //   if (!rst_n) begin
-  //     counter <= 0;
-  //   end else begin
-  //     counter <= counter + 1;
-  //   end
-  // end
-
-  // Generate shift register with clock delay chain
+  // Shift register and pulse delay chain
   genvar i;
   generate
     for (i = 0; i < SR_LEN; i = i + 1) begin : shift_reg
@@ -99,8 +89,7 @@ endmodule
 
 `endif
 
-`ifndef RTL_TEST
-
+// D latch + delay line segment
 module d_latch (
     input  wire d,
     input  wire clk,
@@ -108,39 +97,16 @@ module d_latch (
     output reg q
 );
 
+  // latch
   always @* begin
     if (clk) begin
       q = d;
     end
   end
 
+  // delay line segment
   wire clknext;
   (* dont_touch = "true" *) INV u_inv1 (.out(clknext), .in(clk));
   (* dont_touch = "true" *) INV u_inv2 (.out(clkout), .in(clknext));
 
 endmodule
-
-`else
-
-module d_latch #(	
-  parameter real SET_DELAY_NS = 0.25
-) (
-    input  wire d,
-    input  wire clk,
-    output wire clkout,
-    output reg q
-);
-
-  always @* begin
-    if (clk) begin
-      #(SET_DELAY_NS) q = d;
-    end
-  end
-
-  wire clknext;
-  (* dont_touch = "true" *) INV u_inv1 (.out(clknext), .in(clk));
-  (* dont_touch = "true" *) INV u_inv2 (.out(clkout), .in(clknext));
-
-endmodule
-
-`endif
