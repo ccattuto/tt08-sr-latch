@@ -52,7 +52,7 @@ async def test_shift_register(dut):
 
     SEQ_LEN = 10
     sum = 0
-    for i in range(SR_LEN):
+    for i in range(SR_LEN + SEQ_LEN * 2):
         await Timer(10, units="ns")
 
         # toggle shift signal
